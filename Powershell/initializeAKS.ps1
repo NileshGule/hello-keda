@@ -10,7 +10,9 @@ Param(
     [parameter(Mandatory = $false)]
     [int16]$workerNodeCount = 1,
     [parameter(Mandatory = $false)]
-    [string]$kubernetesVersion = "1.11.2"
+    [string]$kubernetesVersion = "1.11.2",
+    [parameter(Mandatory = $false)]
+    [string]$acrRegistryName = "ngAcrRegistry"
 
 )
 
@@ -82,7 +84,7 @@ az aks create `
     --service-principal $appId `
     --client-secret $password `
     --output=jsonc `
-    --attach-acr=ngAcrRegistry
+    --attach-acr=$acrRegistryName
 # --kubernetes-version=$kubernetesVersion `
 
 # Enable virtual node add on
@@ -111,13 +113,6 @@ kubectl create clusterrolebinding kubernetes-dashboard `
 
 Write-Host "Creating Tiller service account for Helm" -ForegroundColor Green
 
-# source common variables
-. .\var.ps1
-
-Set-Location $helmRootDirectory
-
-kubectl apply -f .\helm-rbac.yaml
-
 Write-Host "Initializing Helm with Tiller service account" -ForegroundColor Green
 
 # helm init --service-account tiller
@@ -133,6 +128,7 @@ helm repo update
 Start-Sleep -Seconds 30
 
 Write-Host "Initializing KEDA on AKS cluster $clusterName" -ForegroundColor Green
+kubectl create namespace keda
 
 helm install keda `
     kedacore/keda `

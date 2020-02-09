@@ -26,14 +26,19 @@ az acr create `
     --name=$acrRegistryName `
     --resource-group=$resourceGroupName `
     --sku=Basic `
+    --admin-enabled=true `
     --output=jsonc
 
 
-az acr update -n ngAcrRegistry --admin-enabled true
+# az acr update -n ngAcrRegistry --admin-enabled true
 
 az acr credential show -n ngAcrRegistry
 
-kubectl create secret docker-registry regcred --docker-server=ngacrregistry.azurecr.io --docker-username=ngAcrRegistry --docker-password=OiY4ILE2FEH8YlT=Hn8P8kHNoemP6o5X --docker-email=nileshgule@outlook.com
+kubectl create secret docker-registry regcred `
+    --docker-server=ngacrregistry.azurecr.io `
+    --docker-username=ngAcrRegistry `
+    --docker-password= <<YOUR PASSWORD>> `
+    --docker-email= <<YOUR EMAIL>>
 
 kubectl get secret regcred --output=yaml
 
