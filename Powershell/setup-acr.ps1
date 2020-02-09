@@ -32,3 +32,9 @@ az acr create `
 az acr update -n ngAcrRegistry --admin-enabled true
 
 az acr credential show -n ngAcrRegistry
+
+kubectl create secret docker-registry regcred --docker-server=ngacrregistry.azurecr.io --docker-username=ngAcrRegistry --docker-password=OiY4ILE2FEH8YlT=Hn8P8kHNoemP6o5X --docker-email=nileshgule@outlook.com
+
+kubectl get secret regcred --output=yaml
+
+kubectl get secret regcred --output="jsonpath={.data.\.dockerconfigjson}" | base64 --decode
