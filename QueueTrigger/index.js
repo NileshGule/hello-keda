@@ -1,4 +1,4 @@
-module.exports = async function(context, myQueueItem) {
+module.exports = async function (context, myQueueItem) {
   context.log(
     "JavaScript queue trigger function processed work item",
     myQueueItem
@@ -16,4 +16,4 @@ module.exports = async function(context, myQueueItem) {
   context.log("completed processing the queue message at " + dateTime);
 };
 
-const snooze = ms => new Promise(resolve => setTimeout(resolve, ms));
+const snooze = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
