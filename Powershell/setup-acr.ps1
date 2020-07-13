@@ -32,7 +32,12 @@ az acr create `
 
 # az acr update -n ngAcrRegistry --admin-enabled true
 
-az acr credential show -n ngAcrRegistry
+az acr credential show -n ngAcrRegistry `
+    --output="jsonpath={.password[0].value}"
+
+$acrPassword = az acr credential show --name ngAcrRegistry --query "passwords[0].value"
+
+$acrUser = az acr credential show --name ngAcrRegistry --query "username"
 
 kubectl create secret docker-registry regcred `
     --docker-server=ngacrregistry.azurecr.io `

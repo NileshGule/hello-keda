@@ -4,7 +4,8 @@ module.exports = async function (context, myQueueItem) {
     myQueueItem
   );
 
-  await snooze(2 * 1000);
+  //one second fake delay
+  await snooze(1 * 1000);
 
   var today = new Date();
   var date =

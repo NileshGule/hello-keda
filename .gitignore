@@ -42,6 +42,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-.vscode
+
 codealike.json
 acr.md

@@ -1,0 +1,60 @@
+data:
+  FUNCTIONS_WORKER_RUNTIME: bm9kZQ==
+  FUNCTIONS_CORETOOLS_ENVIRONMENT: MQ==
+  WEBSITE_NODE_DEFAULT_VERSION: OC4xMS4x
+  AzureWebJobsStorage: RGVmYXVsdEVuZHBvaW50c1Byb3RvY29sPWh0dHBzO0VuZHBvaW50U3VmZml4PWNvcmUud2luZG93cy5uZXQ7QWNjb3VudE5hbWU9Z2Fic2dzdG9yYWdlYWNjb3VudDtBY2NvdW50S2V5PXorc1lqVThYaWVHMHF3QjdmNzNPYkF2MWV1NFlkeEs3ZzhqVHJWQXQvVGllL1RLVFhwdi92M09hU1RZRGRVRFZ2ajlCMFBiUm9jQTBOQWVnU3dzZ0pRPT0=
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hello-keda
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-keda
+  namespace: default
+  labels:
+    app: hello-keda
+spec:
+  selector:
+    matchLabels:
+      app: hello-keda
+  template:
+    metadata:
+      labels:
+        app: hello-keda
+    spec:
+      containers:
+        - name: hello-keda
+          image: nileshgule/hello-keda
+          env:
+            - name: AzureFunctionsJobHost__functions__0
+              value: QueueTrigger
+          envFrom:
+            - secretRef:
+                name: hello-keda
+      tolerations:
+        - operator: Exists
+---
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: hello-keda
+  namespace: default
+  labels:
+    deploymentName: hello-keda
+spec:
+  scaleTargetRef:
+    deploymentName: hello-keda
+  pollingInterval: 5 # Optional. Default: 30 seconds
+  maxReplicaCount: 80
+  triggers:
+    - type: azure-queue
+      metadata:
+        name: myQueueItem
+        type: queueTrigger
+        direction: in
+        queueName: js-queue-items
+        connection: AzureWebJobsStorage
+---
