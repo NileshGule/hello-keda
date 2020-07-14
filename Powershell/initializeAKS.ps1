@@ -132,9 +132,6 @@ kubectl create namespace keda
 
 helm install keda `
     kedacore/keda `
-    --devel `
-    --set logLevel=debug `
     --namespace keda
-
 
 Set-Location ~/projects/hello-keda/Powershell
